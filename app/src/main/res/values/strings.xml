@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">Marvel Comics</string>
+    <string name="character_title">Bishop (Lucas Bishop)</string>
+    <string name="character_description"><b>Intro:</b> The mutant known only as Bishop was born in the 21st
+        Century A.D. of alternate timeline Earth-1191. Bishop can absorb most types of energy,
+        including magic and psychic, directed toward him. The nature of his powers makes it
+        difficult to damage him with energy-based attacks.</string>
+    <string name="character_origin"><b>Origin:</b> Bishop first appears as a member of Xavier\'s Security Enforcers
+        (initially called the Xavier School Enforcers), a mutant police force from a dystopian
+        future of the Marvel Universe. He travels to the 20th century and joins the X-Men, a team
+        he knew only as legends.</string>
+    <string name="character_powers"><b>Powers:</b> energy absorption, energy projection, concussive blasts,
+        strength, fast healing, limited invulnerability, instinctively knows his location at all times.</string>
 </resources>
