@@ -18,8 +18,6 @@ public class ServiceGenerator {
 
     public static final String API_BASE_URL = "http://gateway.marvel.com";
 
-    private static final String API_PUBLIC_KEY = "fb87f1900046c62163db5378c962bdf9";
-    private static final String API_PRIVATE_KEY = "2bbc173e99340db09bee85ba39c0a9471af79e29";
 
     private static OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 
@@ -48,10 +46,23 @@ public class ServiceGenerator {
 
             final String timeStamp = String.valueOf(System.currentTimeMillis());
 
-            final String hashInput = timeStamp + API_PRIVATE_KEY + API_PUBLIC_KEY;
+            String publicApiKey = null;
+            String privateApiKey = null;
+
+            Properties properties = new Properties();
+            try {
+                properties.load(new FileInputStream("gradle.properties"));
+                publicApiKey = properties.getProperty("com.geekmode.marvel-public-api-key");
+                privateApiKey = properties.getProperty("com.geekmode.marvel-private-api-key");
+            } catch (IOException e) {
+                Log.e(TAG, "Error: unable to load properties!");
+                return null;
+            }
+
+            final String hashInput = timeStamp + privateApiKey + publicApiKey;
             final String hash = new String(Hex.encodeHex(DigestUtils.md5(hashInput)));
             final HttpUrl url = originalHttpUrl.newBuilder()
-                    .addQueryParameter("apikey", API_PUBLIC_KEY)
+                    .addQueryParameter("apikey", publicApiKey)
                     .addQueryParameter("ts", timeStamp)
                     .addQueryParameter("hash", hash)
                     .build();
