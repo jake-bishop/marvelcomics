@@ -40,4 +40,4 @@ captures/
 # Keystore files
 *.jks
 
-gradle.properties
+auth.properties
