@@ -27,7 +27,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Log.i(TAG, "onCreate");
-
     }
 
     @Override
@@ -38,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
         CharacterService characterService = ServiceGenerator.getService(CharacterService.class, getApplicationContext());
         Observable<CharactersResponse> response = characterService.characters("Bishop");
+        ImageView imageView = (ImageView) findViewById(R.id.character_image_view);
 
         subscription = response.subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
                         error -> {
                             Log.e(TAG, "Error: sorry, unable to load character. " + error.getMessage());
                             Toast.makeText(getApplicationContext(), "Service response error: " + error.getMessage(), Toast.LENGTH_LONG).show();
+                            Picasso.with(this).load(R.drawable.bishop).into(imageView);
                         });
     }
 
@@ -111,10 +112,9 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        if(firstCharacter.getThumbnailPath() != null && !firstCharacter.getThumbnailPath().isEmpty()) {
-            Picasso.with(this)
-                    .load(firstCharacter.getThumbnailPath())
-                    .into(imageView);
-        }
+        Picasso.with(this)
+                .load(firstCharacter.getThumbnailPath())
+                .error(R.drawable.bishop)
+                .into(imageView);
     }
 }
