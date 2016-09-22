@@ -1,9 +1,15 @@
 package com.geekmode.marvelcomics;
 
+import android.content.Context;
+import android.content.res.AssetManager;
+import android.util.Log;
+
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Properties;
 
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
@@ -12,28 +18,41 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ServiceGenerator {
 
     public static final String API_BASE_URL = "http://gateway.marvel.com";
 
+    private static final String TAG = ServiceGenerator.class.getSimpleName();
 
     private static OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 
     private static Retrofit.Builder builder =
             new Retrofit.Builder()
-                    .baseUrl(API_BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create());
+                    .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .baseUrl(API_BASE_URL);
 
-    public static <S> S createService(Class<S> serviceClass) {
+    private static Retrofit retrofit = null;
+    private static Context applicationContext;
+
+    public static <S> S getService(Class<S> serviceClass, Context applicationContext) {
+        ServiceGenerator.applicationContext = applicationContext;
+
         httpClient.addInterceptor(new ApiInterceptor());
 
         final HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         httpClient.addInterceptor(loggingInterceptor);
 
-        final Retrofit retrofit = builder.client(httpClient.build()).build();
+        if(retrofit == null) {
+            retrofit = builder
+                    .client(httpClient.build())
+                    .build();
+        }
+
         return retrofit.create(serviceClass);
     }
 
@@ -51,11 +70,11 @@ public class ServiceGenerator {
 
             Properties properties = new Properties();
             try {
-                properties.load(new FileInputStream("gradle.properties"));
-                publicApiKey = properties.getProperty("com.geekmode.marvel-public-api-key");
-                privateApiKey = properties.getProperty("com.geekmode.marvel-private-api-key");
+                properties.load(applicationContext.getAssets().open("auth.properties"));
+                publicApiKey = properties.getProperty("marvel.public.key");
+                privateApiKey = properties.getProperty("marvel.private.key");
             } catch (IOException e) {
-                Log.e(TAG, "Error: unable to load properties!");
+                Log.e(TAG, "Error: unable to load properties!" + e.getMessage());
                 return null;
             }
 
@@ -73,6 +92,4 @@ public class ServiceGenerator {
             return chain.proceed(request);
         }
     }
-
-
 }

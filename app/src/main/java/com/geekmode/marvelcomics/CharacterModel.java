@@ -45,6 +45,10 @@ public class CharacterModel {
         return modified;
     }
 
+    public String getThumbnailPath() {
+        return this.thumbnail.getPath() + "." + this.thumbnail.getExtension();
+    }
+
     @Override
     public String toString() {
         return "CharacterModel{" +
