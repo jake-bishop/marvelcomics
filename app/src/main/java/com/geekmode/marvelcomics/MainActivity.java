@@ -7,6 +7,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.geekmode.marvelcomics.images.ImageUtil;
+import com.geekmode.marvelcomics.model.CharacterModel;
+import com.geekmode.marvelcomics.model.CharactersResponse;
+import com.geekmode.marvelcomics.services.CharacterService;
 
 import javax.inject.Inject;
 

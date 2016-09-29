@@ -1,20 +1,17 @@
-package com.geekmode.marvelcomics;
+package com.geekmode.marvelcomics.images;
 
 import android.content.Context;
 import android.widget.ImageView;
 
+import com.geekmode.marvelcomics.R;
 import com.squareup.picasso.Picasso;
-
-/**
- * Created by Jake on 9/27/2016.
- */
 
 public class PicassoImageUtilImpl implements ImageUtil {
 
     private final Picasso picasso;
     private final Context context;
 
-    PicassoImageUtilImpl(Picasso picasso, Context context){
+    public PicassoImageUtilImpl(Picasso picasso, Context context){
         this.picasso = picasso;
         this.context = context;
     }

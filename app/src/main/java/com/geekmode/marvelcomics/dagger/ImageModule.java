@@ -1,9 +1,12 @@
-package com.geekmode.marvelcomics;
+package com.geekmode.marvelcomics.dagger;
 
 import android.content.Context;
 
+import com.geekmode.marvelcomics.images.ImageUtil;
+import com.geekmode.marvelcomics.images.PicassoImageUtilImpl;
 import com.squareup.picasso.Picasso;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -12,21 +15,9 @@ import dagger.Provides;
 @Module
 public class ImageModule {
 
-    private Context context;
-
-    ImageModule(Context context) {
-        this.context = context;
-    }
-
     @Provides
     @Singleton
-    Picasso getPicasso() {
-        return new Picasso.Builder(context).build();
-    }
-
-    @Provides
-    @Singleton
-    ImageUtil getImageUtil() {
+    ImageUtil getImageUtil(@Named("application_context") Context context) {
         return new PicassoImageUtilImpl(new Picasso.Builder(context).build(), context);
     }
 

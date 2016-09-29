@@ -1,8 +1,11 @@
-package com.geekmode.marvelcomics;
+package com.geekmode.marvelcomics.dagger;
 
 import android.content.Context;
 
+import com.geekmode.marvelcomics.MarvelApp;
+
 import javax.inject.Named;
+import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
@@ -16,11 +19,13 @@ public class ApplicationModule {
     }
 
     @Provides
+    @Singleton
     public MarvelApp getApplication(){
         return marvelApp;
     }
 
     @Provides
+    @Singleton
     @Named("application_context")
     public Context getApplicationContext(){
         return marvelApp.getApplicationContext();

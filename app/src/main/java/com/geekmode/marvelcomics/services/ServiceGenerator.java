@@ -1,13 +1,11 @@
-package com.geekmode.marvelcomics;
+package com.geekmode.marvelcomics.services;
 
 import android.content.Context;
-import android.content.res.AssetManager;
 import android.util.Log;
 
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 

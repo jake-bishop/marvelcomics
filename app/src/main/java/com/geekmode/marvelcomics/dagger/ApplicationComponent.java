@@ -1,9 +1,10 @@
-package com.geekmode.marvelcomics;
+package com.geekmode.marvelcomics.dagger;
+
+import com.geekmode.marvelcomics.MainActivity;
 
 import javax.inject.Singleton;
 
 import dagger.Component;
-import dagger.Provides;
 
 /**
  * Created by Jake on 9/27/2016.

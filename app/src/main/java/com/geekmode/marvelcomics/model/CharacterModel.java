@@ -1,4 +1,4 @@
-package com.geekmode.marvelcomics;
+package com.geekmode.marvelcomics.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -33,20 +33,40 @@ public class CharacterModel {
         return id;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDescription() {
         return description;
     }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public Date getModified() {
         return modified;
     }
 
+    public void setModified(Date modified) {
+        this.modified = modified;
+    }
+
     public String getThumbnailPath() {
         return this.thumbnail.getPath() + "." + this.thumbnail.getExtension();
+    }
+
+    public void setThumbnail(Thumbnail thumbnail) {
+        this.thumbnail = thumbnail;
     }
 
     @Override
@@ -73,8 +93,16 @@ public class CharacterModel {
             return path;
         }
 
+        public void setPath(String path) {
+            this.path = path;
+        }
+
         public String getExtension() {
             return extension;
+        }
+
+        public void setExtension(String extension) {
+            this.extension = extension;
         }
 
         @Override
