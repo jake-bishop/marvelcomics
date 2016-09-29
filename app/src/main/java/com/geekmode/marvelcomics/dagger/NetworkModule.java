@@ -16,7 +16,7 @@ public class NetworkModule {
 
     @Provides
     @Singleton
-    CharacterService getCharacterService(@Named("application_context") Context context) {
+    public CharacterService getCharacterService(@Named("application_context") Context context) {
         return ServiceGenerator.getService(CharacterService.class, context);
     }
 

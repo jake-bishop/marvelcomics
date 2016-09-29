@@ -30,4 +30,5 @@ public class ApplicationModule {
     public Context getApplicationContext(){
         return marvelApp.getApplicationContext();
     }
+
 }

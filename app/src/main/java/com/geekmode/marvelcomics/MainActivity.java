@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
         Log.i(TAG, "onDestroy");
     }
 
-    private void updateCharacterCard(final CharactersResponse charactersResponse) {
+    protected void updateCharacterCard(final CharactersResponse charactersResponse) {
         Log.i(TAG, "RxJava: processing characterData: " + charactersResponse.toString());
 
         final CharacterModel firstCharacter = charactersResponse.getFirstCharacter();

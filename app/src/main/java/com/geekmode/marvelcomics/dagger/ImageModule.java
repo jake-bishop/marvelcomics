@@ -17,7 +17,7 @@ public class ImageModule {
 
     @Provides
     @Singleton
-    ImageUtil getImageUtil(@Named("application_context") Context context) {
+    public ImageUtil getImageUtil(@Named("application_context") Context context) {
         return new PicassoImageUtilImpl(new Picasso.Builder(context).build(), context);
     }
 

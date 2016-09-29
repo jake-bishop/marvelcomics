@@ -5,9 +5,6 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
 
-/**
- * Created by Jake on 9/18/2016.
- */
 public class CharacterModel {
     @SerializedName("id")
     @Expose
@@ -78,39 +75,5 @@ public class CharacterModel {
                 ", modified=" + modified +
                 ", thumbnail=" + thumbnail +
                 '}';
-    }
-
-    private class Thumbnail {
-        @SerializedName("path")
-        @Expose
-        private String path;
-
-        @SerializedName("extension")
-        @Expose
-        private String extension;
-
-        public String getPath() {
-            return path;
-        }
-
-        public void setPath(String path) {
-            this.path = path;
-        }
-
-        public String getExtension() {
-            return extension;
-        }
-
-        public void setExtension(String extension) {
-            this.extension = extension;
-        }
-
-        @Override
-        public String toString() {
-            return "Thumbnail{" +
-                    "path='" + path + '\'' +
-                    ", extension='" + extension + '\'' +
-                    '}';
-        }
     }
 }
