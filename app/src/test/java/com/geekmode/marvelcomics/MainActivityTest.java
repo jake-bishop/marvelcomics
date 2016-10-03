@@ -19,12 +19,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.robolectric.Robolectric;
-import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 
 import it.cosenonjaviste.daggermock.DaggerMockRule;
@@ -36,7 +35,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
 
-@RunWith(RobolectricGradleTestRunner.class)
+@RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = LOLLIPOP, application = TestMarvelApp.class)
 public class MainActivityTest {
     @Mock
@@ -44,7 +43,10 @@ public class MainActivityTest {
     @Mock
     private ImageUtil imageUtil;
 
-    MainActivity testObject;
+    private MainActivity testObject;
+
+    private String expectedName;
+    private String expectedDescription;
 
     @Rule
     public DaggerMockRule<ApplicationComponent> daggerMockRule =
@@ -53,30 +55,23 @@ public class MainActivityTest {
                     .set(applicationComponent ->
                             ((TestMarvelApp) RuntimeEnvironment.application)
                                     .setComponent(applicationComponent));
-    private String expectedPath;
-    private String expectedName;
-    private String expectedDescription;
-    private String expectedAttribution;
-    private CharactersResponse charactersResponse;
-    private Observable<CharactersResponse> observable;
 
     @Before
     public void setup() {
         expectedName = "Gambit";
         expectedDescription = "Gambit absorbs energy to charge objects that he can propel, such as playing cards.";
-        expectedAttribution = "Copyleft 2016 Acme, Inc.";
-        expectedPath = "somepath";
-        charactersResponse = buildCharacterResponse(expectedName, expectedDescription, expectedAttribution, expectedPath);
+        CharactersResponse charactersResponse = buildCharacterResponse(expectedName, expectedDescription,
+                "Copyleft 2016 Acme, Inc.", "somepath");
 
-        observable = Observable.just(charactersResponse);
+        Observable<CharactersResponse> observable = Observable.just(charactersResponse);
 
         when(characterService.characters(anyString())).thenReturn(observable);
+
+        testObject = Robolectric.buildActivity(MainActivity.class).setup().get();
     }
 
     @Test
     public void testCharacterFieldsSetFromCharacterService() throws Exception {
-        testObject = Robolectric.buildActivity(MainActivity.class).setup().get();
-
         TextView nameTextView = (TextView) testObject.findViewById(R.id.title_text_view);
         TextView descriptionTextView = (TextView) testObject.findViewById(R.id.description_text_view);
 
@@ -86,8 +81,6 @@ public class MainActivityTest {
 
     @Test
     public void testImageLoader() throws Exception {
-        testObject = Robolectric.buildActivity(MainActivity.class).setup().get();
-
         ImageView imageView = (ImageView) testObject.findViewById(R.id.character_image_view);
 
         verify(imageUtil).loadImage("somepath.jpg", imageView);
@@ -123,7 +116,7 @@ public class MainActivityTest {
         thumbnail.setExtension("jpg");
         characterModel.setThumbnail(thumbnail);
 
-        characterData.setResults(Arrays.asList(characterModel));
+        characterData.setResults(Collections.singletonList(characterModel));
 
         retval.setData(characterData);
 
