@@ -6,12 +6,8 @@ import javax.inject.Singleton;
 
 import dagger.Component;
 
-/**
- * Created by Jake on 9/27/2016.
- */
-
 @Singleton
-@Component(modules = {ApplicationModule.class, NetworkModule.class, ImageModule.class})
+@Component(modules = ApplicationModule.class)
 public interface ApplicationComponent {
     void inject(MainActivity mainActivity);
 }

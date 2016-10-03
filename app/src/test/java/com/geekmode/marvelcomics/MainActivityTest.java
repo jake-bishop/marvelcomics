@@ -5,8 +5,6 @@ import android.widget.TextView;
 
 import com.geekmode.marvelcomics.dagger.ApplicationComponent;
 import com.geekmode.marvelcomics.dagger.ApplicationModule;
-import com.geekmode.marvelcomics.dagger.ImageModule;
-import com.geekmode.marvelcomics.dagger.NetworkModule;
 import com.geekmode.marvelcomics.images.ImageUtil;
 import com.geekmode.marvelcomics.model.CharacterData;
 import com.geekmode.marvelcomics.model.CharacterModel;
@@ -14,11 +12,14 @@ import com.geekmode.marvelcomics.model.CharactersResponse;
 import com.geekmode.marvelcomics.model.Thumbnail;
 import com.geekmode.marvelcomics.services.CharacterService;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.robolectric.Robolectric;
+import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
@@ -28,67 +29,77 @@ import java.util.Date;
 
 import it.cosenonjaviste.daggermock.DaggerMockRule;
 import rx.Observable;
-import rx.observers.TestSubscriber;
-import rx.schedulers.TestScheduler;
 
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
 
-@RunWith(RobolectricTestRunner.class)
+@RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = LOLLIPOP, application = TestMarvelApp.class)
 public class MainActivityTest {
     @Mock
-    CharacterService characterService;
+    private CharacterService characterService;
     @Mock
-    ImageUtil imageUtil;
+    private ImageUtil imageUtil;
+
+    MainActivity testObject;
 
     @Rule
     public DaggerMockRule<ApplicationComponent> daggerMockRule =
             new DaggerMockRule<>(ApplicationComponent.class,
-                    new NetworkModule(),
-                    new ImageModule(),
                     new ApplicationModule(((TestMarvelApp) RuntimeEnvironment.application)))
                     .set(applicationComponent ->
                             ((TestMarvelApp) RuntimeEnvironment.application)
                                     .setComponent(applicationComponent));
+    private String expectedPath;
+    private String expectedName;
+    private String expectedDescription;
+    private String expectedAttribution;
+    private CharactersResponse charactersResponse;
+    private Observable<CharactersResponse> observable;
+
+    @Before
+    public void setup() {
+        expectedName = "Gambit";
+        expectedDescription = "Gambit absorbs energy to charge objects that he can propel, such as playing cards.";
+        expectedAttribution = "Copyleft 2016 Acme, Inc.";
+        expectedPath = "somepath";
+        charactersResponse = buildCharacterResponse(expectedName, expectedDescription, expectedAttribution, expectedPath);
+
+        observable = Observable.just(charactersResponse);
+
+        when(characterService.characters(anyString())).thenReturn(observable);
+    }
 
     @Test
     public void testCharacterFieldsSetFromCharacterService() throws Exception {
-        String expectedName = "Gambit";
-        String expectedDescription = "Gambit absorbs energy to charge objects that he can propel, such as playing cards.";
-        String expectedAttribution = "Copyleft 2016 Acme, Inc.";
-        CharactersResponse charactersResponse = buildCharacterResponse(expectedName, expectedDescription, expectedAttribution, "anypath");
-
-        Observable<CharactersResponse> observable = Observable.just(charactersResponse);
-        when(characterService.characters(anyString())).thenReturn(observable);
-
-        MainActivity testObject = Robolectric.buildActivity(MainActivity.class).create().start().get();
+        System.out.println("test 1 start ---------");
+        testObject = Robolectric.buildActivity(MainActivity.class).setup().get();
 
         TextView nameTextView = (TextView) testObject.findViewById(R.id.title_text_view);
         TextView descriptionTextView = (TextView) testObject.findViewById(R.id.description_text_view);
+
         assertEquals(expectedName, nameTextView.getText().toString());
         assertEquals(expectedDescription, descriptionTextView.getText().toString());
     }
 
     @Test
     public void testImageLoader() throws Exception {
-        String expectedPath = "somepath";
-        String expectedName = "Gambit";
-        String expectedDescription = "Gambit absorbs energy to charge objects that he can propel, such as playing cards.";
-        String expectedAttribution = "Copyleft 2016 Acme, Inc.";
-        CharactersResponse charactersResponse = buildCharacterResponse(expectedName, expectedDescription, expectedAttribution, expectedPath);
-
-        Observable<CharactersResponse> observable = Observable.just(charactersResponse);
-        when(characterService.characters(anyString())).thenReturn(observable);
-
-        MainActivity testObject = Robolectric.buildActivity(MainActivity.class).create().start().get();
+        System.out.println("test 2 start ------------");
+        testObject = Robolectric.buildActivity(MainActivity.class).setup().get();
 
         ImageView imageView = (ImageView) testObject.findViewById(R.id.character_image_view);
 
         verify(imageUtil).loadImage("somepath.jpg", imageView);
+    }
+
+    @After
+    public void tearDown() {
+        System.out.println("tear Down...");
+        testObject.onStop();
+        testObject.onDestroy();
     }
 
     private CharactersResponse buildCharacterResponse(String name, String description, String attribution, String path) {

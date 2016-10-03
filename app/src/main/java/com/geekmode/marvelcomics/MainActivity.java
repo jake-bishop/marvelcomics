@@ -22,7 +22,7 @@ import rx.schedulers.Schedulers;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    private static Subscription subscription;
+    private Subscription subscription;
 
     @Inject
     CharacterService characterService;
@@ -42,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
 
         Log.i(TAG, "onCreate");
 
+        System.out.println("onCreate");
+
         titleView = (TextView) findViewById(R.id.title_text_view);
         descriptionView = (TextView) findViewById(R.id.description_text_view);
         attributionView = (TextView) findViewById(R.id.attribution_text_view);
@@ -53,18 +55,22 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
 
         Log.i(TAG, "MainActivity onStart");
+        System.out.println("onStart");
 
         Observable<CharactersResponse> response = characterService.characters("Bishop");
 
+        System.out.println("got observable " + response.hashCode());
+
         subscription = response.subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .first()
                 .subscribe(this::updateCharacterCard,
                         error -> {
                             Log.e(TAG, "Error: sorry, unable to load character. " + error.getMessage());
                             Toast.makeText(getApplicationContext(), "Service response error: " + error.getMessage(), Toast.LENGTH_LONG).show();
                             imageUtil.loadImage(R.drawable.bishop, imageView);
                         });
+
+        System.out.println("got subscription " + subscription.hashCode());
     }
 
     @Override
@@ -72,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
 
         Log.i(TAG, "onPause");
+        System.out.println("onPause");
     }
 
     @Override
@@ -79,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
         super.onStop();
 
         Log.i(TAG, "onStop");
+        System.out.println("onStop");
 
         if (subscription != null) {
             subscription.unsubscribe();
@@ -90,21 +98,27 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
 
         Log.i(TAG, "onDestroy");
+        System.out.println("onDestroy");
     }
 
-    protected void updateCharacterCard(final CharactersResponse charactersResponse) {
+    protected void updateCharacterCard(CharactersResponse charactersResponse) {
         Log.i(TAG, "RxJava: processing characterData: " + charactersResponse.toString());
 
-        final CharacterModel firstCharacter = charactersResponse.getFirstCharacter();
+        System.out.println("updateCharacterCard");
+
+        CharacterModel firstCharacter = charactersResponse.getFirstCharacter();
 
         if (firstCharacter != null) {
-            final String title = firstCharacter.getName();
-            final String description = firstCharacter.getDescription();
-            final String attribution = charactersResponse.getAttributionText();
+            System.out.println("first != null " + firstCharacter.hashCode());
+            String title = firstCharacter.getName();
+            String description = firstCharacter.getDescription();
+            String attribution = charactersResponse.getAttributionText();
 
             titleView.setText(title);
             attributionView.setText(attribution);
+            System.out.println("set text fields");
             imageUtil.loadImage(firstCharacter.getThumbnailPath(), imageView);
+            System.out.println("loaded image");
 
             if (description != null && !description.isEmpty()) {
                 descriptionView.setText(description);
@@ -115,6 +129,7 @@ public class MainActivity extends AppCompatActivity {
             titleView.setText(R.string.character_title);
             descriptionView.setText(R.string.character_description);
             imageUtil.loadImage(R.drawable.bishop, imageView);
+            System.err.println("first IS NULL!!!");
         }
     }
 }
