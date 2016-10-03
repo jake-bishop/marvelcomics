@@ -51,7 +51,6 @@
                 style="@style/CardDescriptiveText"
                 android:textSize="16sp"
                 android:textAlignment="center"
-                android:visibility="invisible"
                 android:id="@+id/attribution_text_view"
                 android:paddingTop="@dimen/activity_vertical_margin" />
         </LinearLayout>
