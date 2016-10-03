@@ -38,14 +38,14 @@ public class ApplicationModule {
 
     @Provides
     @Singleton
-    public ImageUtil getImageUtil() {
-        return new PicassoImageUtilImpl(new Picasso.Builder(marvelApp.getApplicationContext()).build(), marvelApp.getApplicationContext());
+    public ImageUtil getImageUtil(@Named("application_context") Context context) {
+        return new PicassoImageUtilImpl(new Picasso.Builder(context).build(), context);
     }
 
     @Provides
     @Singleton
-    public CharacterService getCharacterService() {
-        return ServiceGenerator.getService(CharacterService.class, marvelApp.getApplicationContext());
+    public CharacterService getCharacterService(@Named("application_context") Context context) {
+        return ServiceGenerator.getService(CharacterService.class, context);
     }
 
 }
