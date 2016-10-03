@@ -75,7 +75,6 @@ public class MainActivityTest {
 
     @Test
     public void testCharacterFieldsSetFromCharacterService() throws Exception {
-        System.out.println("test 1 start ---------");
         testObject = Robolectric.buildActivity(MainActivity.class).setup().get();
 
         TextView nameTextView = (TextView) testObject.findViewById(R.id.title_text_view);
@@ -87,7 +86,6 @@ public class MainActivityTest {
 
     @Test
     public void testImageLoader() throws Exception {
-        System.out.println("test 2 start ------------");
         testObject = Robolectric.buildActivity(MainActivity.class).setup().get();
 
         ImageView imageView = (ImageView) testObject.findViewById(R.id.character_image_view);
@@ -97,7 +95,6 @@ public class MainActivityTest {
 
     @After
     public void tearDown() {
-        System.out.println("tear Down...");
         testObject.onStop();
         testObject.onDestroy();
     }
