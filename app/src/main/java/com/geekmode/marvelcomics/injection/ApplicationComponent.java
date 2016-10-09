@@ -1,4 +1,4 @@
-package com.geekmode.marvelcomics.dagger;
+package com.geekmode.marvelcomics.injection;
 
 import com.geekmode.marvelcomics.MainActivity;
 

@@ -1,4 +1,4 @@
-package com.geekmode.marvelcomics.dagger;
+package com.geekmode.marvelcomics.injection;
 
 import android.content.Context;
 
@@ -46,6 +46,11 @@ public class ApplicationModule {
     @Singleton
     public CharacterService getCharacterService(@Named("application_context") Context context) {
         return ServiceGenerator.getService(CharacterService.class, context);
+    }
+
+    @Provides
+    public SchedulerProvider provideSchedulerProvider() {
+        return new SchedulerProvider();
     }
 
 }

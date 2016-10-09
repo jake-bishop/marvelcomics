@@ -3,9 +3,10 @@ package com.geekmode.marvelcomics;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.geekmode.marvelcomics.dagger.ApplicationComponent;
-import com.geekmode.marvelcomics.dagger.ApplicationModule;
+import com.geekmode.marvelcomics.injection.ApplicationComponent;
+import com.geekmode.marvelcomics.injection.ApplicationModule;
 import com.geekmode.marvelcomics.images.ImageUtil;
+import com.geekmode.marvelcomics.injection.SchedulerProvider;
 import com.geekmode.marvelcomics.model.CharacterData;
 import com.geekmode.marvelcomics.model.CharacterModel;
 import com.geekmode.marvelcomics.model.CharactersResponse;
@@ -28,26 +29,17 @@ import java.util.Date;
 
 import it.cosenonjaviste.daggermock.DaggerMockRule;
 import rx.Observable;
+import rx.schedulers.Schedulers;
 
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = LOLLIPOP, application = TestMarvelApp.class)
 public class MainActivityTest {
-    @Mock
-    private CharacterService characterService;
-    @Mock
-    private ImageUtil imageUtil;
-
-    private MainActivity testObject;
-
-    private String expectedName;
-    private String expectedDescription;
-
     @Rule
     public DaggerMockRule<ApplicationComponent> daggerMockRule =
             new DaggerMockRule<>(ApplicationComponent.class,
@@ -55,6 +47,16 @@ public class MainActivityTest {
                     .set(applicationComponent ->
                             ((TestMarvelApp) RuntimeEnvironment.application)
                                     .setComponent(applicationComponent));
+    @Mock
+    private CharacterService characterService;
+    @Mock
+    private ImageUtil imageUtil;
+    @Mock
+    private SchedulerProvider schedulerProvider;
+
+    private MainActivity testObject;
+    private String expectedName;
+    private String expectedDescription;
 
     @Before
     public void setup() {
@@ -66,6 +68,9 @@ public class MainActivityTest {
         Observable<CharactersResponse> observable = Observable.just(charactersResponse);
 
         when(characterService.characters(anyString())).thenReturn(observable);
+
+        when(schedulerProvider.getMainScheduler()).thenReturn(Schedulers.immediate());
+        when(schedulerProvider.getIoScheduler()).thenReturn(Schedulers.immediate());
 
         testObject = Robolectric.buildActivity(MainActivity.class).setup().get();
     }

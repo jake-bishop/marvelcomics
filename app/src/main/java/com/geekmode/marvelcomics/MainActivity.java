@@ -1,13 +1,14 @@
 package com.geekmode.marvelcomics;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.geekmode.marvelcomics.images.ImageUtil;
+import com.geekmode.marvelcomics.injection.SchedulerProvider;
 import com.geekmode.marvelcomics.model.CharacterModel;
 import com.geekmode.marvelcomics.model.CharactersResponse;
 import com.geekmode.marvelcomics.services.CharacterService;
@@ -16,8 +17,6 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -28,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
     CharacterService characterService;
     @Inject
     ImageUtil imageUtil;
+    @Inject
+    SchedulerProvider schedulerProvider;
 
     private TextView titleView;
     private TextView descriptionView;
@@ -54,10 +55,10 @@ public class MainActivity extends AppCompatActivity {
 
         Log.i(TAG, "MainActivity onStart");
 
-        Observable<CharactersResponse> response = characterService.characters("Bishop");
+        Observable<CharactersResponse> response = characterService.characters("Thor");
 
-        subscription = response.subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
+        subscription = response.subscribeOn(schedulerProvider.getIoScheduler())
+                .observeOn(schedulerProvider.getMainScheduler())
                 .subscribe(this::updateCharacterCard,
                         error -> {
                             Log.e(TAG, "Error: sorry, unable to load character. " + error.getMessage());

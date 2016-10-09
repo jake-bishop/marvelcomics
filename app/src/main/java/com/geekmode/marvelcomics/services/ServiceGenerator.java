@@ -3,6 +3,9 @@ package com.geekmode.marvelcomics.services;
 import android.content.Context;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 
@@ -27,11 +30,13 @@ public class ServiceGenerator {
 
     private static OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 
+    private static final Gson gson = new GsonBuilder().setLenient().create();
+
     private static Retrofit.Builder builder =
             new Retrofit.Builder()
-                    .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .baseUrl(API_BASE_URL);
+                    .baseUrl(API_BASE_URL)
+                    .addConverterFactory(GsonConverterFactory.create(gson))
+                    .addCallAdapterFactory(RxJavaCallAdapterFactory.create());
 
     private static Retrofit retrofit = null;
     private static Context applicationContext;

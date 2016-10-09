@@ -1,6 +1,6 @@
 package com.geekmode.marvelcomics;
 
-import com.geekmode.marvelcomics.dagger.ApplicationComponent;
+import com.geekmode.marvelcomics.injection.ApplicationComponent;
 
 public class TestMarvelApp extends MarvelApp {
     private ApplicationComponent testApplicationComponent;
