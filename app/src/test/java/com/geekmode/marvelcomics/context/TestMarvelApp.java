@@ -1,4 +1,4 @@
-package com.geekmode.marvelcomics;
+package com.geekmode.marvelcomics.context;
 
 import com.geekmode.marvelcomics.injection.ApplicationComponent;
 
@@ -10,7 +10,7 @@ public class TestMarvelApp extends MarvelApp {
         return testApplicationComponent;
     }
 
-    public void setComponent(ApplicationComponent testApplicationComponent){
+    public void setApplicationComponent(ApplicationComponent testApplicationComponent){
         this.testApplicationComponent = testApplicationComponent;
     }
 }

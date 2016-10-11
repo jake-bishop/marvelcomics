@@ -2,11 +2,9 @@ package com.geekmode.marvelcomics.injection;
 
 import android.content.Context;
 
-import com.geekmode.marvelcomics.MarvelApp;
+import com.geekmode.marvelcomics.context.MarvelApp;
 import com.geekmode.marvelcomics.images.ImageUtil;
 import com.geekmode.marvelcomics.images.PicassoImageUtilImpl;
-import com.geekmode.marvelcomics.services.CharacterService;
-import com.geekmode.marvelcomics.services.ServiceGenerator;
 import com.squareup.picasso.Picasso;
 
 import javax.inject.Named;
@@ -40,17 +38,6 @@ public class ApplicationModule {
     @Singleton
     public ImageUtil getImageUtil(@Named("application_context") Context context) {
         return new PicassoImageUtilImpl(new Picasso.Builder(context).build(), context);
-    }
-
-    @Provides
-    @Singleton
-    public CharacterService getCharacterService(@Named("application_context") Context context) {
-        return ServiceGenerator.getService(CharacterService.class, context);
-    }
-
-    @Provides
-    public SchedulerProvider provideSchedulerProvider() {
-        return new SchedulerProvider();
     }
 
 }
