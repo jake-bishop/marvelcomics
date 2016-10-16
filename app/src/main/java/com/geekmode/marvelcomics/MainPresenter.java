@@ -1,5 +1,7 @@
 package com.geekmode.marvelcomics;
 
+import android.util.Log;
+
 import com.geekmode.marvelcomics.injection.SchedulerProvider;
 import com.geekmode.marvelcomics.model.CharacterModel;
 import com.geekmode.marvelcomics.model.CharactersResponse;
@@ -22,10 +24,14 @@ public class MainPresenter extends Presenter<MainActivity> {
         characterService.characters("Thor")
                 .subscribeOn(schedulerProvider.getIoScheduler())
                 .observeOn(schedulerProvider.getMainScheduler())
-                .subscribe(this::handleResponse, getPresenterView()::handleError);
+                .subscribe(this::handleResponse, this::handleError);
     }
 
     private void handleResponse(final CharactersResponse charactersResponse) {
+        if (!isViewAttached()) {
+            return;
+        }
+
         final CharacterModel firstCharacter = charactersResponse.getFirstCharacter();
 
         if (firstCharacter != null) {
@@ -43,5 +49,15 @@ public class MainPresenter extends Presenter<MainActivity> {
                 getPresenterView().updateDescription(R.string.character_description);
             }
         }
+    }
+
+    private void handleError(final Throwable throwable) {
+        Log.e(getClass().getSimpleName(), throwable.getLocalizedMessage(), throwable);
+
+        if (!isViewAttached()) {
+            return;
+        }
+
+        getPresenterView().handleError(throwable);
     }
 }

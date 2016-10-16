@@ -2,7 +2,6 @@ package com.geekmode.marvelcomics;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,7 +16,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements PresenterView {
-    private static final String TAG = MainActivity.class.getSimpleName();
 
     @Inject
     MainPresenter mainPresenter;
@@ -39,17 +37,19 @@ public class MainActivity extends AppCompatActivity implements PresenterView {
         InjectionHelper.getApplicationComponent(this).inject(this);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-
-        Log.i(TAG, "onCreate");
-
         mainPresenter.attachView(this);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-
         mainPresenter.refreshCharacterData();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mainPresenter.detachView();
     }
 
     void updateName(final String name) {
@@ -74,6 +74,5 @@ public class MainActivity extends AppCompatActivity implements PresenterView {
 
     void handleError(final Throwable throwable) {
         Toast.makeText(MainActivity.this, "Unexpected Error", Toast.LENGTH_LONG).show();
-        Log.e(getClass().getSimpleName(), throwable.getLocalizedMessage(), throwable);
     }
 }
