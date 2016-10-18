@@ -2,7 +2,7 @@ package com.geekmode.marvelcomics.context;
 
 import com.geekmode.marvelcomics.injection.ApplicationComponent;
 
-public class TestMarvelApp extends MarvelApp {
+public class TestMarvelApp extends BaseApplication {
     private ApplicationComponent testApplicationComponent;
 
     @Override
