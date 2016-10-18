@@ -82,8 +82,8 @@ public class CharacterFragmentTest {
 
     @Test
     public void nameAndDescriptionSetFromService() throws Exception {
-        final String expectedDescription = "expectedDescription";
-        final String expectedName = "expectedName";
+        final String expectedDescription = "THERE IS ONLY ZUUL";
+        final String expectedName = "ZUUL";
         final String extension = ".gif";
         final String expectedPath = "expectedPath";
         final CharactersResponse charactersResponse = buildCharacter(expectedDescription, expectedName, extension, expectedPath);
