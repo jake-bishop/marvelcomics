@@ -1,14 +1,17 @@
 package com.geekmode.marvelcomics;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.geekmode.marvelcomics.images.ImageUtil;
 import com.geekmode.marvelcomics.injection.InjectionHelper;
+import com.geekmode.marvelcomics.model.CharacterModel;
 import com.geekmode.marvelcomics.view.PresenterView;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -17,19 +20,11 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements PresenterView {
 
+    @BindView(R.id.character_pager)
+    ViewPager characterPager;
+
     @Inject
     MainPresenter mainPresenter;
-    @Inject
-    ImageUtil imageUtil;
-
-    @BindView(R.id.title_text_view)
-    TextView titleView;
-    @BindView(R.id.description_text_view)
-    TextView descriptionView;
-    @BindView(R.id.attribution_text_view)
-    TextView attributionView;
-    @BindView(R.id.character_image_view)
-    ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements PresenterView {
     @Override
     protected void onStart() {
         super.onStart();
-        mainPresenter.refreshCharacterData();
+        mainPresenter.refreshCharacters("12548");
     }
 
     @Override
@@ -52,24 +47,22 @@ public class MainActivity extends AppCompatActivity implements PresenterView {
         mainPresenter.detachView();
     }
 
-    void updateName(final String name) {
-        titleView.setText(name);
-    }
+    void displayCharacters(final List<CharacterModel> characters) {
 
-    void updateImage(final String url) {
-        imageUtil.loadImage(url, imageView);
-    }
+        //Since in AppCompat Activity ensure you get the SupportFragmentManager, if using native Api use Fragment Manager
+        characterPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
+            @Override
+            public Fragment getItem(final int position) {
 
-    void updateDescription(final String description) {
-        descriptionView.setText(description);
-    }
+                final CharacterModel model = characters.get(position);
+                return CharacterFragment.newInstance(model.getId());
+            }
 
-    void updateDescription(final int resourceId) {
-        descriptionView.setText(resourceId);
-    }
-
-    void updateAttribution(final String attribution) {
-        attributionView.setText(attribution);
+            @Override
+            public int getCount() {
+                return characters.size();
+            }
+        });
     }
 
     void handleError(final Throwable throwable) {

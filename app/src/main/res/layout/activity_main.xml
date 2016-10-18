@@ -1,53 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context="com.geekmode.marvelcomics.MainActivity">
 
-    <ScrollView
+    <android.support.v4.view.ViewPager
+        android:id="@+id/character_pager"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="250sp">
-
-                <ImageView
-                    android:id="@+id/character_image_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:adjustViewBounds="true"
-                    android:contentDescription="Character Image"
-                    android:scaleType="fitXY" />
-
-                <TextView
-                    android:id="@+id/title_text_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:textAlignment="center"
-                    android:textSize="32sp"
-                    android:textStyle="bold" />
-            </FrameLayout>
-
-            <TextView
-                android:id="@+id/description_text_view"
-                style="@style/CardDescriptiveText" />
-
-            <TextView
-                android:id="@+id/attribution_text_view"
-                style="@style/CardDescriptiveText"
-                android:textSize="16sp"
-                android:textAlignment="center" />
-        </LinearLayout>
-    </ScrollView>
-
-</LinearLayout>
+        android:layout_height="wrap_content"/>
+</FrameLayout>

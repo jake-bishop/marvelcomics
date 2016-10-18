@@ -14,7 +14,7 @@ import dagger.Provides;
 public class ServiceModule {
 
     @Provides
-    public CharacterService getCharacterService(@Named("application_context") Context context) {
+    public CharacterService provideCharacterService(@Named("application_context") Context context) {
         return ServiceGenerator.getService(CharacterService.class, context);
     }
 

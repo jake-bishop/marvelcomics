@@ -3,7 +3,6 @@ package com.geekmode.marvelcomics;
 import android.util.Log;
 
 import com.geekmode.marvelcomics.injection.SchedulerProvider;
-import com.geekmode.marvelcomics.model.CharacterModel;
 import com.geekmode.marvelcomics.model.CharactersResponse;
 import com.geekmode.marvelcomics.services.CharacterService;
 import com.geekmode.marvelcomics.view.Presenter;
@@ -15,13 +14,13 @@ public class MainPresenter extends Presenter<MainActivity> {
     private final SchedulerProvider schedulerProvider;
 
     @Inject
-    public MainPresenter(final CharacterService characterService, SchedulerProvider schedulerProvider) {
+    public MainPresenter(final CharacterService characterService, final SchedulerProvider schedulerProvider) {
         this.characterService = characterService;
         this.schedulerProvider = schedulerProvider;
     }
 
-    void refreshCharacterData() {
-        characterService.characters("Thor")
+    public void refreshCharacters(String issueId) {
+        characterService.charactersOfComic(issueId)
                 .subscribeOn(schedulerProvider.getIoScheduler())
                 .observeOn(schedulerProvider.getMainScheduler())
                 .subscribe(this::handleResponse, this::handleError);
@@ -32,23 +31,7 @@ public class MainPresenter extends Presenter<MainActivity> {
             return;
         }
 
-        final CharacterModel firstCharacter = charactersResponse.getFirstCharacter();
-
-        if (firstCharacter != null) {
-            String title = firstCharacter.getName();
-            String description = firstCharacter.getDescription();
-            String attribution = charactersResponse.getAttributionText();
-
-            getPresenterView().updateName(title);
-            getPresenterView().updateAttribution(attribution);
-            getPresenterView().updateImage(firstCharacter.getThumbnailPath());
-
-            if (description != null && !description.isEmpty()) {
-                getPresenterView().updateDescription(description);
-            } else {
-                getPresenterView().updateDescription(R.string.character_description);
-            }
-        }
+        getPresenterView().displayCharacters(charactersResponse.getData().getResults());
     }
 
     private void handleError(final Throwable throwable) {
@@ -60,4 +43,5 @@ public class MainPresenter extends Presenter<MainActivity> {
 
         getPresenterView().handleError(throwable);
     }
+
 }

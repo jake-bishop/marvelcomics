@@ -2,7 +2,7 @@ package com.geekmode.marvelcomics.injection;
 
 import android.content.Context;
 
-import com.geekmode.marvelcomics.context.MarvelApp;
+import com.geekmode.marvelcomics.context.BaseApplication;
 import com.geekmode.marvelcomics.images.ImageUtil;
 import com.geekmode.marvelcomics.images.PicassoImageUtilImpl;
 import com.squareup.picasso.Picasso;
@@ -15,28 +15,28 @@ import dagger.Provides;
 
 @Module
 public class ApplicationModule {
-    private MarvelApp marvelApp;
+    private BaseApplication application;
 
-    public ApplicationModule(MarvelApp marvelApp){
-        this.marvelApp = marvelApp;
+    public ApplicationModule(BaseApplication application){
+        this.application = application;
     }
 
     @Provides
     @Singleton
-    public MarvelApp getApplication(){
-        return marvelApp;
+    public BaseApplication provideApplication(){
+        return application;
     }
 
     @Provides
     @Singleton
     @Named("application_context")
-    public Context getApplicationContext(){
-        return marvelApp.getApplicationContext();
+    public Context provideApplicationContext(){
+        return application.getApplicationContext();
     }
 
     @Provides
     @Singleton
-    public ImageUtil getImageUtil(@Named("application_context") Context context) {
+    public ImageUtil provideImageUtil(@Named("application_context") Context context) {
         return new PicassoImageUtilImpl(new Picasso.Builder(context).build(), context);
     }
 

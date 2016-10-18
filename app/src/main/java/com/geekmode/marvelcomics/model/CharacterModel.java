@@ -8,7 +8,7 @@ import java.util.Date;
 public class CharacterModel {
     @SerializedName("id")
     @Expose
-    private int id;
+    private long id;
 
     @SerializedName("name")
     @Expose
@@ -26,11 +26,11 @@ public class CharacterModel {
     @Expose
     private Thumbnail thumbnail;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
