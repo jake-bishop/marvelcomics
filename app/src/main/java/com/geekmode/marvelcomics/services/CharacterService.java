@@ -1,6 +1,7 @@
 package com.geekmode.marvelcomics.services;
 
 import com.geekmode.marvelcomics.model.CharactersResponse;
+import com.geekmode.marvelcomics.model.Comic;
 
 import retrofit2.http.GET;
 import retrofit2.http.Path;
@@ -16,4 +17,7 @@ public interface CharacterService {
 
     @GET("/v1/public/comics/{issue}/characters")
     Observable<CharactersResponse> charactersOfComic(@Path("issue") String issueId);
+
+    @GET("/v1/public/characters/{characterId}/comics")
+    Observable<Comic> comics(@Path("characterId") String characterId);
 }

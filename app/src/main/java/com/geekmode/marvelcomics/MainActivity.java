@@ -38,7 +38,8 @@ public class MainActivity extends AppCompatActivity implements PresenterView {
     @Override
     protected void onStart() {
         super.onStart();
-        mainPresenter.refreshCharacters("12548");
+        long intExtra = getIntent().getLongExtra("comic-id", -1);
+        mainPresenter.refreshCharacters(String.valueOf(intExtra));
     }
 
     @Override

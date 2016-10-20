@@ -2,9 +2,12 @@ package com.geekmode.marvelcomics.injection;
 
 import android.content.Context;
 
+import com.geekmode.marvelcomics.ComicListPresenter;
+import com.geekmode.marvelcomics.MainPresenter;
 import com.geekmode.marvelcomics.context.BaseApplication;
 import com.geekmode.marvelcomics.images.ImageUtil;
 import com.geekmode.marvelcomics.images.PicassoImageUtilImpl;
+import com.geekmode.marvelcomics.services.CharacterService;
 import com.squareup.picasso.Picasso;
 
 import javax.inject.Named;
@@ -40,4 +43,13 @@ public class ApplicationModule {
         return new PicassoImageUtilImpl(new Picasso.Builder(context).build(), context);
     }
 
+    @Provides
+    public MainPresenter provideMainPresenter(CharacterService characterService, SchedulerProvider schedulerProvider){
+        return new MainPresenter(characterService, schedulerProvider);
+    }
+
+    @Provides
+    public ComicListPresenter provideComicListPresenter(CharacterService characterService, SchedulerProvider schedulerProvider){
+        return new ComicListPresenter(characterService, schedulerProvider);
+    }
 }
