@@ -17,15 +17,19 @@ public class PicassoImageUtilImpl implements ImageUtil {
 
     @Override
     public void loadImage(String imageUrl, ImageView imageView) {
-        picasso.with(context)
-                .load(imageUrl)
-                .into(imageView);
+        loadImage(context, imageUrl, imageView);
     }
 
     @Override
     public void loadImage(int resourceId, ImageView imageView) {
         picasso.with(context)
                 .load(resourceId)
+                .into(imageView);
+    }
+
+    public void loadImage(Context withContext, String imageUrl, ImageView imageView) {
+        picasso.with(withContext)
+                .load(imageUrl)
                 .into(imageView);
     }
 }

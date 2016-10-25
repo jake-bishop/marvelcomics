@@ -1,11 +1,10 @@
-package com.geekmode.marvelcomics;
+package com.geekmode.marvelcomics.view;
 
 import android.util.Log;
 
 import com.geekmode.marvelcomics.injection.SchedulerProvider;
 import com.geekmode.marvelcomics.model.CharactersResponse;
 import com.geekmode.marvelcomics.services.CharacterService;
-import com.geekmode.marvelcomics.view.Presenter;
 
 import javax.inject.Inject;
 

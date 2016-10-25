@@ -1,8 +1,9 @@
 package com.geekmode.marvelcomics.injection;
 
-import com.geekmode.marvelcomics.CharacterFragment;
-import com.geekmode.marvelcomics.ComicListActivity;
-import com.geekmode.marvelcomics.MainActivity;
+import com.geekmode.marvelcomics.view.CharacterFragment;
+import com.geekmode.marvelcomics.view.ComicListActivity;
+import com.geekmode.marvelcomics.view.ComicListViewHolder;
+import com.geekmode.marvelcomics.view.MainActivity;
 
 import javax.inject.Singleton;
 
@@ -14,4 +15,5 @@ public interface ApplicationComponent {
     void inject(MainActivity mainActivity);
     void inject(CharacterFragment fragment);
     void inject(ComicListActivity comicListActivity);
+    void inject(ComicListViewHolder comicListViewHolder);
 }

@@ -5,10 +5,10 @@
     android:id="@+id/activity_comic_list"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.geekmode.marvelcomics.ComicListActivity">
+    tools:context="com.geekmode.marvelcomics.view.ComicListActivity">
 
-    <ListView
-        android:id="@+id/comic_list_view"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/comic_list_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

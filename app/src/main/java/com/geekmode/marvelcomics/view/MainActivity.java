@@ -1,4 +1,4 @@
-package com.geekmode.marvelcomics;
+package com.geekmode.marvelcomics.view;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -7,9 +7,9 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
+import com.geekmode.marvelcomics.R;
 import com.geekmode.marvelcomics.injection.InjectionHelper;
 import com.geekmode.marvelcomics.model.CharacterModel;
-import com.geekmode.marvelcomics.view.PresenterView;
 
 import java.util.List;
 

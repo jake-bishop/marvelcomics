@@ -1,4 +1,4 @@
-package com.geekmode.marvelcomics;
+package com.geekmode.marvelcomics.view;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -11,9 +11,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.geekmode.marvelcomics.R;
 import com.geekmode.marvelcomics.images.ImageUtil;
 import com.geekmode.marvelcomics.injection.InjectionHelper;
-import com.geekmode.marvelcomics.view.PresenterView;
 
 import javax.inject.Inject;
 

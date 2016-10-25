@@ -1,15 +1,17 @@
-package com.geekmode.marvelcomics;
+package com.geekmode.marvelcomics.view;
 
 import com.geekmode.marvelcomics.injection.SchedulerProvider;
 import com.geekmode.marvelcomics.model.Comic;
 import com.geekmode.marvelcomics.services.CharacterService;
-import com.geekmode.marvelcomics.view.Presenter;
+
+import javax.inject.Inject;
 
 public class ComicListPresenter extends Presenter<ComicListActivity> {
 
     private final CharacterService marvelComicsService;
     private final SchedulerProvider schedulerProvider;
 
+    @Inject
     public ComicListPresenter(final CharacterService characterService, final SchedulerProvider schedulerProvider) {
         this.marvelComicsService = characterService;
         this.schedulerProvider = schedulerProvider;

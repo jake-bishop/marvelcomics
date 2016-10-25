@@ -15,6 +15,7 @@ import com.geekmode.marvelcomics.model.CharacterModel;
 import com.geekmode.marvelcomics.model.CharactersResponse;
 import com.geekmode.marvelcomics.model.Thumbnail;
 import com.geekmode.marvelcomics.services.CharacterService;
+import com.geekmode.marvelcomics.view.MainActivity;
 
 import org.junit.Before;
 import org.junit.Rule;

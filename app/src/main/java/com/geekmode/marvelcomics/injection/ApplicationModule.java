@@ -2,12 +2,12 @@ package com.geekmode.marvelcomics.injection;
 
 import android.content.Context;
 
-import com.geekmode.marvelcomics.ComicListPresenter;
-import com.geekmode.marvelcomics.MainPresenter;
 import com.geekmode.marvelcomics.context.BaseApplication;
 import com.geekmode.marvelcomics.images.ImageUtil;
 import com.geekmode.marvelcomics.images.PicassoImageUtilImpl;
 import com.geekmode.marvelcomics.services.CharacterService;
+import com.geekmode.marvelcomics.view.ComicListPresenter;
+import com.geekmode.marvelcomics.view.MainPresenter;
 import com.squareup.picasso.Picasso;
 
 import javax.inject.Named;
