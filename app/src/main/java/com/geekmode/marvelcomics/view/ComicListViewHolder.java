@@ -7,32 +7,26 @@ import android.widget.TextView;
 
 import com.geekmode.marvelcomics.R;
 import com.geekmode.marvelcomics.images.ImageUtil;
-import com.geekmode.marvelcomics.injection.InjectionHelper;
 import com.geekmode.marvelcomics.model.ComicModel;
-
-import javax.inject.Inject;
 
 public class ComicListViewHolder extends RecyclerView.ViewHolder {
 
-    @Inject
-    ImageUtil imageUtil;
+    private final ImageView image;
+    private final TextView name;
+    private final ImageUtil imageLoader;
+    private final ComicListPresenter presenter;
 
-    private final ImageView imageView;
-    private final TextView nameView;
-
-    @Inject
-    public ComicListViewHolder(View itemView, final ItemClickedListener listener) {
+    public ComicListViewHolder(final View itemView, final ImageUtil imageLoader, final ComicListPresenter presenter) {
         super(itemView);
-        InjectionHelper.getApplicationComponent(itemView.getContext()).inject(this);
-
-        imageView = (ImageView) itemView.findViewById(R.id.comic_list_image);
-        nameView = (TextView) itemView.findViewById(R.id.comic_list_name);
-
-        itemView.setOnClickListener(v -> listener.itemClicked(getAdapterPosition()));
+        image = (ImageView) itemView.findViewById(R.id.comic_list_image);
+        name = (TextView) itemView.findViewById(R.id.comic_list_name);
+        this.imageLoader = imageLoader;
+        this.presenter = presenter;
     }
 
     public void bindView(ComicModel comic) {
-        nameView.setText(comic.getTitle());
-        imageUtil.loadImage(itemView.getContext(), comic.getThumbnailPath(), imageView);
+        imageLoader.loadImage(comic.getThumbnailPath(), image);
+        name.setText(comic.getTitle());
+        itemView.setOnClickListener(v -> presenter.comicClicked(comic.getId()));
     }
 }

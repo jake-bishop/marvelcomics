@@ -32,4 +32,8 @@ public class ComicListPresenter extends Presenter<ComicListActivity> {
         getPresenterView().showComics(comic.getData().getResults());
     }
 
+    public void comicClicked(long comicId) {
+        getPresenterView().startComicCardsActivity(comicId);
+    }
+
 }

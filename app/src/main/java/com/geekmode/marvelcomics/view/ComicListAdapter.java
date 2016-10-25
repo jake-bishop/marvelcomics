@@ -6,62 +6,37 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.geekmode.marvelcomics.R;
+import com.geekmode.marvelcomics.images.ImageUtil;
 import com.geekmode.marvelcomics.model.ComicModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ComicListAdapter extends RecyclerView.Adapter<ComicListViewHolder> {
-    private final List<ComicModel> data = new ArrayList<>();
-    private ItemClickedListener listener;
+    private final ComicListActivity comicListActivity;
+    private final List<ComicModel> data;
+    private ImageUtil imageLoader;
+    private ComicListPresenter comicListPresenter;
 
-    public ComicListAdapter(ItemClickedListener listener) {
-        this.listener = listener;
-    }
-
-    public void addComics(final List<ComicModel> comics) {
-        data.clear();
-        data.addAll(comics);
-
-        notifyDataSetChanged();
-    }
-
-    public void addCOmic(ComicModel comic) {
-        data.add(comic);
-        notifyItemInserted(data.lastIndexOf(comic));
-    }
-
-    public void removeComic(int position) {
-        data.remove(position);
-        notifyItemRemoved(position);
-    }
-
-    public void moveComic(int sourcePosition, int targetPosition) {
-        final ComicModel comic = data.get(sourcePosition);
-        data.remove(sourcePosition);
-        data.add(targetPosition, comic);
-
-        notifyItemMoved(sourcePosition, targetPosition);
-    }
-
-    public ComicModel getComic(int position) {
-        return data.get(position);
+    public ComicListAdapter(final ComicListActivity comicListActivity, final List<ComicModel> data, final ImageUtil imageLoader, final ComicListPresenter comicListPresenter) {
+        this.comicListActivity = comicListActivity;
+        this.data = data;
+        this.imageLoader = imageLoader;
+        this.comicListPresenter = comicListPresenter;
     }
 
     @Override
-    public ComicListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.comic_row, parent, false);
-        return new ComicListViewHolder(view, listener);
-    }
-
-    @Override
-    public void onBindViewHolder(ComicListViewHolder holder, int position) {
-        final ComicModel comic = data.get(position);
-        holder.bindView(comic);
+    public void onBindViewHolder(final ComicListViewHolder holder, final int position) {
+        holder.bindView(data.get(position));
     }
 
     @Override
     public int getItemCount() {
         return data.size();
+    }
+
+    @Override
+    public ComicListViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
+        final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.comic_row, parent, false);
+        return new ComicListViewHolder(view, imageLoader, comicListPresenter);
     }
 }
