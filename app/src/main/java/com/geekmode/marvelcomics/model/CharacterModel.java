@@ -76,4 +76,12 @@ public class CharacterModel {
                 ", thumbnail=" + thumbnail +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object that) {
+        if(that instanceof CharacterModel) {
+            return id == ((CharacterModel) that).getId();
+        }
+        return super.equals(that);
+    }
 }

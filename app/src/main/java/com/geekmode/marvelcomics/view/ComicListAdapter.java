@@ -9,29 +9,47 @@ import com.geekmode.marvelcomics.R;
 import com.geekmode.marvelcomics.images.ImageUtil;
 import com.geekmode.marvelcomics.model.ComicModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ComicListAdapter extends RecyclerView.Adapter<ComicListViewHolder> {
     private final ComicListActivity comicListActivity;
-    private final List<ComicModel> data;
+    private final List<ComicModel> comicList = new ArrayList<>();
     private ImageUtil imageLoader;
     private ComicListPresenter comicListPresenter;
 
-    public ComicListAdapter(final ComicListActivity comicListActivity, final List<ComicModel> data, final ImageUtil imageLoader, final ComicListPresenter comicListPresenter) {
+    public ComicListAdapter(final ComicListActivity comicListActivity, final ImageUtil imageLoader, final ComicListPresenter comicListPresenter) {
         this.comicListActivity = comicListActivity;
-        this.data = data;
         this.imageLoader = imageLoader;
         this.comicListPresenter = comicListPresenter;
     }
 
+    public void appendComics(final List<ComicModel> comics) {
+        comicList.addAll(comics);
+        notifyDataSetChanged();
+    }
+
+    public void removeComic(int position) {
+        comicList.remove(position);
+        notifyItemRemoved(position);
+    }
+
+    public void moveComic(int sourcePosition, int targetPosition) {
+        final ComicModel comic = comicList.get(sourcePosition);
+        comicList.remove(sourcePosition);
+        comicList.add(targetPosition, comic);
+
+        notifyItemMoved(sourcePosition, targetPosition);
+    }
+
     @Override
     public void onBindViewHolder(final ComicListViewHolder holder, final int position) {
-        holder.bindView(data.get(position));
+        holder.bindView(comicList.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return data.size();
+        return comicList.size();
     }
 
     @Override

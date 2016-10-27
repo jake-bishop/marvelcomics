@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,6 +34,25 @@ public class ComicListActivity extends AppCompatActivity implements PresenterVie
     @Inject
     ImageUtil imageLoader;
 
+    private LinearLayoutManager layoutManager;
+    private ComicListAdapter adapter;
+
+    final ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+        @Override
+        public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder source, RecyclerView.ViewHolder target) {
+            final int sourcePosition = source.getAdapterPosition();
+            final int targetPosition = target.getAdapterPosition();
+            adapter.moveComic(sourcePosition, targetPosition);
+            return true;
+        }
+
+        @Override
+        public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+            final int adapterPosition = viewHolder.getAdapterPosition();
+            adapter.removeComic(adapterPosition);
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,7 +63,30 @@ public class ComicListActivity extends AppCompatActivity implements PresenterVie
         presenter.attachView(this);
 
         comicRecyclerView.setHasFixedSize(true);
-        comicRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        layoutManager = new LinearLayoutManager(this);
+        comicRecyclerView.setLayoutManager(layoutManager);
+
+        adapter = new ComicListAdapter(this, imageLoader, presenter);
+        comicRecyclerView.setAdapter(adapter);
+
+        final ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+        itemTouchHelper.attachToRecyclerView(comicRecyclerView);
+
+        comicRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                System.out.println("PAGER - onScrolled");
+                if (dy > 0) {
+                    System.out.println("PAGER - scrolled DOWN");
+                    System.out.println("PAGER - last visible pos: " + layoutManager.findLastVisibleItemPosition());
+                    if ((layoutManager.findLastVisibleItemPosition() + 2) >= adapter.getItemCount()) {
+                        System.out.println("PAGER - last visible >= item count");
+                        presenter.getMoreCharacters();
+                    }
+                }
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
 
         presenter.refreshCharacters();
     }
@@ -53,7 +96,7 @@ public class ComicListActivity extends AppCompatActivity implements PresenterVie
     }
 
     public void showComics(List<ComicModel> comics) {
-        comicRecyclerView.setAdapter(new ComicListAdapter(this, comics, imageLoader, presenter));
+        adapter.appendComics(comics);
 
         if (emptyView != null) {
             if (comics == null || comics.isEmpty()) {

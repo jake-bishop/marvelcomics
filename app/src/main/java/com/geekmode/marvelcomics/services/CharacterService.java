@@ -19,5 +19,5 @@ public interface CharacterService {
     Observable<CharactersResponse> charactersOfComic(@Path("issue") String issueId);
 
     @GET("/v1/public/characters/{characterId}/comics")
-    Observable<Comic> comics(@Path("characterId") String characterId);
+    Observable<Comic> comics(@Path("characterId") String characterId, @Query("offset") int offset, @Query("limit") int limit);
 }
