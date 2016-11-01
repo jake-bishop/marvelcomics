@@ -3,11 +3,11 @@ package com.geekmode.marvelcomics.view;
 import android.support.annotation.NonNull;
 
 import com.geekmode.marvelcomics.injection.SchedulerProvider;
-import com.geekmode.marvelcomics.model.CharacterData;
-import com.geekmode.marvelcomics.model.CharacterModel;
-import com.geekmode.marvelcomics.model.CharactersResponse;
-import com.geekmode.marvelcomics.model.Thumbnail;
+import com.geekmode.marvelcomics.model.Character;
+import com.geekmode.marvelcomics.model.ListWrapper;
+import com.geekmode.marvelcomics.model.ResponseWrapper;
 import com.geekmode.marvelcomics.services.CharacterService;
+import com.geekmode.marvelcomics.services.ObservableDatabase;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -33,6 +33,8 @@ public class CharacterPresenterTest {
     SchedulerProvider schedulerProvider;
     @Mock
     CharacterFragment mockPresenterView;
+    @Mock
+    ObservableDatabase mockObservableDatabase;
 
     private CharacterPresenter testObject;
 
@@ -41,20 +43,17 @@ public class CharacterPresenterTest {
 
     @Before
     public void setUp() throws Exception {
-        when(mockService.characterById(expectedComicId)).thenReturn(Observable.empty());
+        when(mockService.characterById(expectedCharacterId)).thenReturn(Observable.empty());
         when(schedulerProvider.getIoScheduler()).thenReturn(Schedulers.immediate());
         when(schedulerProvider.getMainScheduler()).thenReturn(Schedulers.immediate());
 
-        testObject = new CharacterPresenter(mockService, schedulerProvider);
+        testObject = new CharacterPresenter(mockService, schedulerProvider, mockObservableDatabase);
         testObject.setCharacterId(expectedCharacterId);
     }
 
     @Test
     public void refreshData_noInteractionsIfNoView() throws Exception {
-        final String expectedName = "MY NAME";
-
-        final CharactersResponse charactersResponse = buildCharacter("", expectedName, "", "");
-        when(mockService.characterById(anyString())).thenReturn(Observable.just(charactersResponse));
+        when(mockService.characterById(anyString())).thenReturn(Observable.just(getCharactersResponse("ZUUL")));
 
         testObject.refreshCharacterData();
 
@@ -63,29 +62,24 @@ public class CharacterPresenterTest {
 
     @Test
     public void refreshData() throws Exception {
-        final String expectedName = "MY NAME";
-
-        final CharactersResponse charactersResponse = buildCharacter("", expectedName, "", "");
-        when(mockService.characterById(anyString())).thenReturn(Observable.just(charactersResponse));
+        final String expectedName = "ZUUL";
+        when(mockService.characterById(anyString())).thenReturn(Observable.just(getCharactersResponse(expectedName)));
 
         testObject.attachView(mockPresenterView);
         testObject.refreshCharacterData();
+
         Mockito.verify(mockPresenterView).updateName(expectedName);
     }
 
     @NonNull
-    private CharactersResponse buildCharacter(final String expectedDescription, final String expectedName, final String extension, final String expectedPath) {
-        final CharactersResponse charactersResponse = new CharactersResponse();
-        CharacterData data = new CharacterData();
-        CharacterModel model = new CharacterModel();
-        data.setResults(Collections.singletonList(model));
-        model.setDescription(expectedDescription);
-        model.setName(expectedName);
-        final Thumbnail thumbnail = new Thumbnail();
-        thumbnail.setExtension(extension);
-        thumbnail.setPath(expectedPath);
-        model.setThumbnail(thumbnail);
-        charactersResponse.setData(data);
-        return charactersResponse;
+    private ResponseWrapper<Character> getCharactersResponse(String expectedName) {
+        final ResponseWrapper<Character> responseWrapper = new ResponseWrapper<>();
+        final ListWrapper<Character> listWrapper = new ListWrapper<>();
+        final Character character = new Character(123L, expectedName, "THERE IS ONLY ZUUL", "something", "other");
+
+        listWrapper.setResults(Collections.singletonList(character));
+        responseWrapper.setData(listWrapper);
+
+        return responseWrapper;
     }
 }

@@ -53,6 +53,22 @@ public class ComicListActivity extends AppCompatActivity implements PresenterVie
         }
     };
 
+    final RecyclerView.OnScrollListener scrollListener = new RecyclerView.OnScrollListener() {
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            System.out.println("PAGER - onScrolled");
+            if (dy > 0) {
+                System.out.println("PAGER - scrolled DOWN");
+                System.out.println("PAGER - last visible pos: " + layoutManager.findLastVisibleItemPosition());
+                if ((layoutManager.findLastVisibleItemPosition() + 2) >= adapter.getItemCount()) {
+                    System.out.println("PAGER - last visible >= item count");
+                    presenter.getMoreCharacters();
+                }
+            }
+            super.onScrolled(recyclerView, dx, dy);
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,21 +88,7 @@ public class ComicListActivity extends AppCompatActivity implements PresenterVie
         final ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
         itemTouchHelper.attachToRecyclerView(comicRecyclerView);
 
-        comicRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                System.out.println("PAGER - onScrolled");
-                if (dy > 0) {
-                    System.out.println("PAGER - scrolled DOWN");
-                    System.out.println("PAGER - last visible pos: " + layoutManager.findLastVisibleItemPosition());
-                    if ((layoutManager.findLastVisibleItemPosition() + 2) >= adapter.getItemCount()) {
-                        System.out.println("PAGER - last visible >= item count");
-                        presenter.getMoreCharacters();
-                    }
-                }
-                super.onScrolled(recyclerView, dx, dy);
-            }
-        });
+        comicRecyclerView.addOnScrollListener(scrollListener);
 
         presenter.refreshCharacters();
     }

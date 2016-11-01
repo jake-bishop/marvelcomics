@@ -66,11 +66,11 @@ public class CharacterFragmentTest extends BaseInjectedRobolectricTest {
     public void nameAndDescriptionSetFromService() throws Exception {
         final String expectedDescription = "THERE IS ONLY ZUUL";
         final String expectedName = "ZUUL";
-        final String extension = ".gif";
+        final String extension = "gif";
         final String expectedPath = "expectedPath";
         final CharactersResponse charactersResponse = buildCharacter(expectedDescription, expectedName, extension, expectedPath);
 
-        final List<CharactersResponse> results = Collections.singletonList(charactersResponse);
+//        final List<CharactersResponse> results = Collections.singletonList(charactersResponse);
 
         responseObservable.onNext(charactersResponse);
 
@@ -80,7 +80,7 @@ public class CharacterFragmentTest extends BaseInjectedRobolectricTest {
 
     @Test
     public void imageLoadedIntoView() throws Exception {
-        final String extension = ".gif";
+        final String extension = "gif";
         final String expectedPath = "expectedPath";
         final CharactersResponse charactersResponse = buildCharacter("description", "name", extension, expectedPath);
 
