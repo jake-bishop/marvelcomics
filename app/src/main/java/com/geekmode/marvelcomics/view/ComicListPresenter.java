@@ -5,8 +5,6 @@ import com.geekmode.marvelcomics.model.Comic;
 import com.geekmode.marvelcomics.model.ComicData;
 import com.geekmode.marvelcomics.services.CharacterService;
 
-import javax.inject.Inject;
-
 public class ComicListPresenter extends Presenter<ComicListActivity> {
 
     private final CharacterService marvelComicsService;
@@ -17,7 +15,6 @@ public class ComicListPresenter extends Presenter<ComicListActivity> {
     private int offset = 0;
     private int total = 0;
 
-    @Inject
     public ComicListPresenter(final CharacterService characterService, final SchedulerProvider schedulerProvider) {
         this.marvelComicsService = characterService;
         this.schedulerProvider = schedulerProvider;

@@ -1,4 +1,4 @@
-package com.geekmode.marvelcomics;
+package com.geekmode.marvelcomics.view;
 
 import android.support.annotation.NonNull;
 
@@ -8,8 +8,8 @@ import com.geekmode.marvelcomics.model.CharacterModel;
 import com.geekmode.marvelcomics.model.CharactersResponse;
 import com.geekmode.marvelcomics.model.Thumbnail;
 import com.geekmode.marvelcomics.services.CharacterService;
-import com.geekmode.marvelcomics.view.CharacterFragment;
-import com.geekmode.marvelcomics.view.CharacterPresenter;
+import com.geekmode.marvelcomics.view.MainActivity;
+import com.geekmode.marvelcomics.view.MainPresenter;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -23,42 +23,38 @@ import java.util.Collections;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class CharacterPresenterTest {
+public class MainPresenterTest {
 
     @Mock
     CharacterService mockService;
     @Mock
-    SchedulerProvider schedulerProvider;
+    MainActivity mockPresenterView;
     @Mock
-    CharacterFragment mockPresenterView;
+    SchedulerProvider schedulerProvider;
 
-    private CharacterPresenter testObject;
+    private MainPresenter testObject;
 
     private String expectedComicId = "123";
-    private String expectedCharacterId = "456";
 
     @Before
     public void setUp() throws Exception {
-        when(mockService.characterById(expectedComicId)).thenReturn(Observable.empty());
+        when(mockService.charactersOfComic(expectedComicId)).thenReturn(Observable.empty());
         when(schedulerProvider.getIoScheduler()).thenReturn(Schedulers.immediate());
         when(schedulerProvider.getMainScheduler()).thenReturn(Schedulers.immediate());
 
-        testObject = new CharacterPresenter(mockService, schedulerProvider);
-//        testObject.setCharacterId(expectedCharacterId);
+        testObject = new MainPresenter(mockService, schedulerProvider);
     }
 
     @Test
     public void refreshData_noInteractionsIfNoView() throws Exception {
         final String expectedName = "MY NAME";
-
         final CharactersResponse charactersResponse = buildCharacter("", expectedName, "", "");
-        when(mockService.characterById(anyString())).thenReturn(Observable.just(charactersResponse));
+        when(mockService.charactersOfComic(expectedComicId)).thenReturn(Observable.just(charactersResponse));
 
-//        testObject.refreshCharacterData();
+        testObject.refreshCharacters(expectedComicId);
 
         Mockito.verifyZeroInteractions(mockPresenterView);
     }
@@ -66,13 +62,13 @@ public class CharacterPresenterTest {
     @Test
     public void refreshData() throws Exception {
         final String expectedName = "MY NAME";
-
         final CharactersResponse charactersResponse = buildCharacter("", expectedName, "", "");
-        when(mockService.characterById(anyString())).thenReturn(Observable.just(charactersResponse));
+        when(mockService.charactersOfComic(expectedComicId)).thenReturn(Observable.just(charactersResponse));
 
         testObject.attachView(mockPresenterView);
-//        testObject.refreshCharacterData();
-//        Mockito.verify(mockPresenterView).updateName(expectedName);
+        testObject.refreshCharacters(expectedComicId);
+
+//        Mockito.verify(mockPresenterView).displayCharacters(charactersResponse.getData().getResults());
     }
 
     @NonNull

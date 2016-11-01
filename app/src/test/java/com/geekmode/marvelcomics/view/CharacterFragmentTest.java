@@ -1,49 +1,37 @@
-package com.geekmode.marvelcomics;
+package com.geekmode.marvelcomics.view;
 
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.geekmode.marvelcomics.context.TestMarvelApp;
+import com.geekmode.marvelcomics.BaseInjectedRobolectricTest;
+import com.geekmode.marvelcomics.R;
 import com.geekmode.marvelcomics.images.ImageUtil;
-import com.geekmode.marvelcomics.injection.ApplicationComponent;
-import com.geekmode.marvelcomics.injection.ApplicationModule;
 import com.geekmode.marvelcomics.injection.SchedulerProvider;
-import com.geekmode.marvelcomics.injection.ServiceModule;
 import com.geekmode.marvelcomics.model.CharacterData;
 import com.geekmode.marvelcomics.model.CharacterModel;
 import com.geekmode.marvelcomics.model.CharactersResponse;
 import com.geekmode.marvelcomics.model.Thumbnail;
 import com.geekmode.marvelcomics.services.CharacterService;
-import com.geekmode.marvelcomics.view.CharacterFragment;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.robolectric.RobolectricGradleTestRunner;
-import org.robolectric.RuntimeEnvironment;
-import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowToast;
 import org.robolectric.shadows.support.v4.SupportFragmentTestUtil;
 
 import java.util.Collections;
 import java.util.List;
 
-import it.cosenonjaviste.daggermock.DaggerMockRule;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 
-import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = LOLLIPOP, application = TestMarvelApp.class)
-public class CharacterFragmentTest {
+public class CharacterFragmentTest extends BaseInjectedRobolectricTest {
 
     @Mock
     private CharacterService characterService;
@@ -53,13 +41,6 @@ public class CharacterFragmentTest {
     private SchedulerProvider schedulerProvider;
 
     private final PublishSubject<CharactersResponse> responseObservable = PublishSubject.create();
-
-    @Rule
-    public DaggerMockRule<ApplicationComponent> daggerMockRule = new DaggerMockRule<>(
-            ApplicationComponent.class,
-            new ApplicationModule(((TestMarvelApp) RuntimeEnvironment.application)),
-            new ServiceModule())
-            .set(applicationComponent -> ((TestMarvelApp) RuntimeEnvironment.application).setApplicationComponent(applicationComponent));
 
     private TextView nameTextView;
     private TextView descriptionTextView;
