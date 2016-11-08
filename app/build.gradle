@@ -50,6 +50,9 @@ dependencies {
     compile 'io.reactivex:rxjava:1.1.6'
     compile 'com.squareup.sqlbrite:sqlbrite:0.8.0'
 
+    final RX_BINDING_VERSION = "0.4.0"
+    compile "com.jakewharton.rxbinding:rxbinding:$RX_BINDING_VERSION"
+    compile "com.jakewharton.rxbinding:rxbinding-recyclerview-v7:$RX_BINDING_VERSION"
 
     // Add for dagger2
     final DAGGER2_VERSION = '2.6'

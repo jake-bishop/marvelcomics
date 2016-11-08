@@ -14,13 +14,16 @@ import com.geekmode.marvelcomics.R;
 import com.geekmode.marvelcomics.images.ImageUtil;
 import com.geekmode.marvelcomics.injection.InjectionHelper;
 import com.geekmode.marvelcomics.model.ComicModel;
+import com.jakewharton.rxbinding.support.v7.widget.RxRecyclerView;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import rx.Subscription;
 
 public class ComicListActivity extends AppCompatActivity implements PresenterView {
 
@@ -36,6 +39,7 @@ public class ComicListActivity extends AppCompatActivity implements PresenterVie
 
     private LinearLayoutManager layoutManager;
     private ComicListAdapter adapter;
+    private Subscription subscribeListScroll;
 
     final ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
         @Override
@@ -50,22 +54,6 @@ public class ComicListActivity extends AppCompatActivity implements PresenterVie
         public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
             final int adapterPosition = viewHolder.getAdapterPosition();
             adapter.removeComic(adapterPosition);
-        }
-    };
-
-    final RecyclerView.OnScrollListener scrollListener = new RecyclerView.OnScrollListener() {
-        @Override
-        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            System.out.println("PAGER - onScrolled");
-            if (dy > 0) {
-                System.out.println("PAGER - scrolled DOWN");
-                System.out.println("PAGER - last visible pos: " + layoutManager.findLastVisibleItemPosition());
-                if ((layoutManager.findLastVisibleItemPosition() + 2) >= adapter.getItemCount()) {
-                    System.out.println("PAGER - last visible >= item count");
-                    presenter.getMoreCharacters();
-                }
-            }
-            super.onScrolled(recyclerView, dx, dy);
         }
     };
 
@@ -88,9 +76,27 @@ public class ComicListActivity extends AppCompatActivity implements PresenterVie
         final ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
         itemTouchHelper.attachToRecyclerView(comicRecyclerView);
 
-        comicRecyclerView.addOnScrollListener(scrollListener);
+        subscribeListScroll = RxRecyclerView
+                .scrollEvents(comicRecyclerView)
+                .debounce(500, TimeUnit.MILLISECONDS)
+                .subscribe(event -> {
+                    if (event.dy() > 0) {
+                        if ((layoutManager.findLastVisibleItemPosition() + 10) >= adapter.getItemCount()) {
+                            System.out.println("PAGER - getting next set of characters");
+                            presenter.getMoreCharacters();
+                        }
+                    }
+                });
 
         presenter.refreshCharacters();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(subscribeListScroll != null && !subscribeListScroll.isUnsubscribed()) {
+            subscribeListScroll.unsubscribe();
+        }
     }
 
     public void showError() {
