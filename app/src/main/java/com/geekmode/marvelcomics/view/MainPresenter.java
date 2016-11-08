@@ -3,7 +3,8 @@ package com.geekmode.marvelcomics.view;
 import android.util.Log;
 
 import com.geekmode.marvelcomics.injection.SchedulerProvider;
-import com.geekmode.marvelcomics.model.CharactersResponse;
+import com.geekmode.marvelcomics.model.Character;
+import com.geekmode.marvelcomics.model.ResponseWrapper;
 import com.geekmode.marvelcomics.services.CharacterService;
 
 import javax.inject.Inject;
@@ -25,12 +26,12 @@ public class MainPresenter extends Presenter<MainActivity> {
                 .subscribe(this::handleResponse, this::handleError);
     }
 
-    private void handleResponse(final CharactersResponse charactersResponse) {
+    private void handleResponse(final ResponseWrapper<Character> characters) {
         if (!isViewAttached()) {
             return;
         }
 
-        getPresenterView().displayCharacters(charactersResponse.getData().getResults());
+        getPresenterView().displayCharacters(characters.getData().getResults());
     }
 
     private void handleError(final Throwable throwable) {

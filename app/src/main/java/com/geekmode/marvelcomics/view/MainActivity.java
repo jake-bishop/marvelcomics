@@ -9,7 +9,7 @@ import android.widget.Toast;
 
 import com.geekmode.marvelcomics.R;
 import com.geekmode.marvelcomics.injection.InjectionHelper;
-import com.geekmode.marvelcomics.model.CharacterModel;
+import com.geekmode.marvelcomics.model.Character;
 
 import java.util.List;
 
@@ -48,15 +48,15 @@ public class MainActivity extends AppCompatActivity implements PresenterView {
         mainPresenter.detachView();
     }
 
-    void displayCharacters(final List<CharacterModel> characters) {
+    void displayCharacters(final List<Character> characters) {
 
         //Since in AppCompat Activity ensure you get the SupportFragmentManager, if using native Api use Fragment Manager
         characterPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
             public Fragment getItem(final int position) {
 
-                final CharacterModel model = characters.get(position);
-                return CharacterFragment.newInstance(model.getId());
+                final Character character = characters.get(position);
+                return CharacterFragment.newInstance(character.getId());
             }
 
             @Override

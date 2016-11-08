@@ -9,10 +9,9 @@ import com.geekmode.marvelcomics.BaseInjectedRobolectricTest;
 import com.geekmode.marvelcomics.R;
 import com.geekmode.marvelcomics.images.ImageUtil;
 import com.geekmode.marvelcomics.injection.SchedulerProvider;
-import com.geekmode.marvelcomics.model.CharacterData;
-import com.geekmode.marvelcomics.model.CharacterModel;
-import com.geekmode.marvelcomics.model.CharactersResponse;
-import com.geekmode.marvelcomics.model.Thumbnail;
+import com.geekmode.marvelcomics.model.Character;
+import com.geekmode.marvelcomics.model.ListWrapper;
+import com.geekmode.marvelcomics.model.ResponseWrapper;
 import com.geekmode.marvelcomics.services.CharacterService;
 
 import org.junit.Before;
@@ -33,15 +32,13 @@ import static org.mockito.Mockito.when;
 
 public class CharacterFragmentTest extends BaseInjectedRobolectricTest {
 
+    private final PublishSubject<ResponseWrapper<Character>> responseObservable = PublishSubject.create();
     @Mock
     private CharacterService characterService;
     @Mock
     private ImageUtil imageLoader;
     @Mock
     private SchedulerProvider schedulerProvider;
-
-    private final PublishSubject<CharactersResponse> responseObservable = PublishSubject.create();
-
     private TextView nameTextView;
     private TextView descriptionTextView;
     private ImageView characterImageView;
@@ -66,13 +63,9 @@ public class CharacterFragmentTest extends BaseInjectedRobolectricTest {
     public void nameAndDescriptionSetFromService() throws Exception {
         final String expectedDescription = "THERE IS ONLY ZUUL";
         final String expectedName = "ZUUL";
-        final String extension = "gif";
-        final String expectedPath = "expectedPath";
-        final CharactersResponse charactersResponse = buildCharacter(expectedDescription, expectedName, extension, expectedPath);
 
-//        final List<CharactersResponse> results = Collections.singletonList(charactersResponse);
-
-        responseObservable.onNext(charactersResponse);
+        responseObservable.onNext(buildCharacter(expectedDescription, expectedName,
+                "gif", "expectedPath"));
 
         assertEquals(expectedName, nameTextView.getText().toString());
         assertEquals(expectedDescription, descriptionTextView.getText().toString());
@@ -82,11 +75,9 @@ public class CharacterFragmentTest extends BaseInjectedRobolectricTest {
     public void imageLoadedIntoView() throws Exception {
         final String extension = "gif";
         final String expectedPath = "expectedPath";
-        final CharactersResponse charactersResponse = buildCharacter("description", "name", extension, expectedPath);
 
-        final List<CharactersResponse> results = Collections.singletonList(charactersResponse);
-
-        responseObservable.onNext(charactersResponse);
+        responseObservable.onNext(buildCharacter("description", "name",
+                extension, expectedPath));
 
         verify(imageLoader).loadImage(expectedPath + "." + extension, characterImageView);
     }
@@ -99,18 +90,16 @@ public class CharacterFragmentTest extends BaseInjectedRobolectricTest {
     }
 
     @NonNull
-    private CharactersResponse buildCharacter(final String expectedDescription, final String expectedName, final String extension, final String expectedPath) {
-        final CharactersResponse charactersResponse = new CharactersResponse();
-        CharacterData data = new CharacterData();
-        CharacterModel model = new CharacterModel();
-        data.setResults(Collections.singletonList(model));
-        model.setDescription(expectedDescription);
-        model.setName(expectedName);
-        final Thumbnail thumbnail = new Thumbnail();
-        thumbnail.setExtension(extension);
-        thumbnail.setPath(expectedPath);
-        model.setThumbnail(thumbnail);
-        charactersResponse.setData(data);
-        return charactersResponse;
+    private ResponseWrapper<Character> buildCharacter(final String expectedDescription,
+                                                      final String expectedName,
+                                                      final String extension,
+                                                      final String expectedPath) {
+        final List<Character> characterList = Collections.singletonList(new Character(123L,
+                expectedName, expectedDescription, expectedPath, extension));
+        final ListWrapper<Character> characterListWrapper = new ListWrapper<>();
+        characterListWrapper.setResults(characterList);
+        final ResponseWrapper<Character> results = new ResponseWrapper<>();
+        results.setData(characterListWrapper);
+        return results;
     }
 }
