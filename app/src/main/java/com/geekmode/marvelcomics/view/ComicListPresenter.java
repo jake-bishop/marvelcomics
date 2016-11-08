@@ -9,9 +9,9 @@ public class ComicListPresenter extends Presenter<ComicListActivity> {
 
     private final CharacterService marvelComicsService;
     private final SchedulerProvider schedulerProvider;
-    private final int PAGE_SIZE = 20;
+    private final int PAGE_SIZE = 30;
     private final String CHARACTER_ID = "1009718";
-    boolean loading = false;
+    private boolean loading = false;
     private int offset = 0;
     private int total = 0;
 
@@ -33,12 +33,12 @@ public class ComicListPresenter extends Presenter<ComicListActivity> {
             loading = true;
             offset = Math.min(offset + PAGE_SIZE, total);
             refreshCharacters();
-            loading = false;
         }
     }
 
     private void handleError(Throwable throwable) {
         getPresenterView().showError();
+        loading = false;
     }
 
     private void handleResponse(Comic comic) {
@@ -50,6 +50,7 @@ public class ComicListPresenter extends Presenter<ComicListActivity> {
                 getPresenterView().showComics(comicData.getResults());
             }
         }
+        loading = false;
     }
 
     public void comicClicked(long comicId) {
